@@ -2,11 +2,12 @@ import urllib2
 import sys
 import traceback
 import json
+
 class Honeybadger(object):
     def __init__(self, *args, **kwargs):
         # TODO: move into separate Configuration class
         self.config = {
-            'api_key': '33a9b24f', # honeybadger python test API key
+            'api_key': None,
             'endpoint': 'https://api.honeybadger.io',
         }
         self.context = {}
@@ -75,7 +76,7 @@ class Honeybadger(object):
         self._send_notice(exc_type, exc_value, traceback, context=merged_context)
 
     def configure(self, **kwargs):
-        pass
+        self.config.update(kwargs)
 
     def set_context(self, **kwargs):
         self.context.update(kwargs)
