@@ -1,8 +1,9 @@
 from setuptools import setup
+import honeybadger
 
 setup(
     name='honeybadger',
-    version='1.0',
+    version=honeybadger.__version__,
     description='Send Python and Django errors to Honeybadger',
     url='https://github.com/honeybadger-io/honeybadger-python',
     author='Dave Sullivan',
