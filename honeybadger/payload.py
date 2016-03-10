@@ -61,7 +61,24 @@ def server_payload(config):
 
     return payload
 
-def request_payload(request, context):
+def django_request_payload(request, context):
+    payload = {
+        'url': '',
+        'component': '',
+        'action': '',
+        'params': {},
+        'session': {},
+        'cgi_data': {}
+    }
+
+    return payload
+
+def flask_request_payload(request, context):
+    return {
+        'context': context
+    }
+
+def generic_request_payload(request, context):
     return {
         'context': context
     }
@@ -69,6 +86,12 @@ def request_payload(request, context):
 def create_payload(exception, exc_traceback=None, config=None, request=None, context={}):
     if exc_traceback is None:
         exc_traceback = sys.exc_info()[2]
+
+    if request.__module__ == 'django.http.request':
+        request_payload = django_request_payload
+    else:
+        # TODO: figure out Flask support
+        request_payload = generic_request_payload
 
     return {
         'notifier': {

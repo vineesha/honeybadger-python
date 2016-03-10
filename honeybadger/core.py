@@ -8,9 +8,10 @@ class Honeybadger(object):
     def __init__(self, *args, **kwargs):
         self.config = Configuration()
         self.context = {}
+        self.request = kwargs.get('request', None)
 
     def _send_notice(self, exception, exc_traceback=None, context={}):
-        payload = create_payload(exception, exc_traceback, context=context)
+        payload = create_payload(exception, exc_traceback, request=self.request, config=self.config, context=context)
         send_notice(self.config, payload)
 
     def exception_hook(self, type, value, exc_traceback):
