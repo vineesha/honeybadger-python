@@ -74,7 +74,8 @@ def django_request_payload(request, context, config):
         'action': request.resolver_match.func.__name__,
         'params': {},
         'session': {},
-        'cgi_data': dict(request.META)
+        'cgi_data': dict(request.META),
+        'context': context
     }
 
     if hasattr(request, 'session'):
