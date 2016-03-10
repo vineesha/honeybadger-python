@@ -7,6 +7,12 @@ import psutil
 
 from .version import __version__
 
+def filter_dict(data, filter_keys):
+    for key in filter_keys:
+        if data.has_key(key):
+            data[key] = "[FILTERED]"
+    return data
+
 def error_payload(exception, exc_traceback, config):
     def _filename(name):
         return name.replace(config.project_root, '[PROJECT_ROOT]')
@@ -61,24 +67,33 @@ def server_payload(config):
 
     return payload
 
-def django_request_payload(request, context):
+def django_request_payload(request, context, config):
     payload = {
-        'url': '',
-        'component': '',
-        'action': '',
+        'url': request.build_absolute_uri(),
+        'component': request.resolver_match.app_name,
+        'action': request.resolver_match.func.__name__,
         'params': {},
         'session': {},
-        'cgi_data': {}
+        'cgi_data': dict(request.META)
     }
+
+    if hasattr(request, 'session'):
+        payload['session'] = filter_dict(dict(request.session), config.params_filters)
+
+    if request.method == 'POST':
+        payload['params'] = filter_dict(dict(request.POST), config.params_filters)
+    else:
+        payload['params'] = filter_dict(dict(request.GET), config.params_filters)
+
 
     return payload
 
-def flask_request_payload(request, context):
+def flask_request_payload(request, context, config):
     return {
         'context': context
     }
 
-def generic_request_payload(request, context):
+def generic_request_payload(request, context, config):
     return {
         'context': context
     }
@@ -101,5 +116,5 @@ def create_payload(exception, exc_traceback=None, config=None, request=None, con
         },
         'error':  error_payload(exception, exc_traceback, config),
         'server': server_payload(config),
-        'request': request_payload(request, context),
+        'request': request_payload(request, context, config),
     }
