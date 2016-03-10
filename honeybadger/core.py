@@ -1,13 +1,12 @@
+from contextlib import contextmanager
+
 from .connection import send_notice
 from .payload import create_payload
+from .config import Configuration
 
 class Honeybadger(object):
     def __init__(self, *args, **kwargs):
-        # TODO: move into separate Configuration class
-        self.config = {
-            'api_key': None,
-            'endpoint': 'https://api.honeybadger.io',
-        }
+        self.config = Configuration()
         self.context = {}
 
     def _send_notice(self, exception, exc_traceback=None, context={}):
@@ -19,7 +18,7 @@ class Honeybadger(object):
 
     def notify(self, exception=None, options={}, context={}):
         if exception is None:
-            pass
+            return
             # TODO: handle user-specified options
 
         merged_context = self.context
@@ -28,7 +27,7 @@ class Honeybadger(object):
         self._send_notice(exception, context=merged_context)
 
     def configure(self, **kwargs):
-        self.config.update(kwargs)
+        self.config.set_config_from_dict(kwargs)
 
     def set_context(self, **kwargs):
         self.context.update(kwargs)
@@ -36,5 +35,12 @@ class Honeybadger(object):
     def reset_context(self):
         self.context = {}
 
+    @contextmanager
     def context(self, **kwargs):
-        pass
+        merged_context = self.context
+        merged_context.update(kwargs)
+
+        try:
+            yield
+        except Exception, e:
+            self._send_notice(e, context=merged_context)
