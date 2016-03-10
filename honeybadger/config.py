@@ -1,13 +1,3 @@
-"""
-Name	Type	Default	Description
-api_key	string		Required. The project's private API key.
-project_root	string	`pwd`	The path to the project's executable code.
-environment	string	production	The environment name of the application.
-hostname	string	`hostname`	The hostname of the system.
-endpoint	string	https://api.honeybadger.io	The base API. Sometimes this is broken up into host, port, ssl, etc. options. Whatever makes sense is fine. The host, port and protocol/scheme should be configurable in any case.
-params_filters	array	["password", "password_confirmation", "credit_card"]	A list of keys whose values are replaced with "[FILTERED]" in sensitive data objects (like request parameters).
-trace_threshold	integer	2000	The threshold in milliseconds which will cause a trace to be sent to Honeybadger.
-"""
 import os
 import socket
 

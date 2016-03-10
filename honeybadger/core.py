@@ -16,13 +16,17 @@ class Honeybadger(object):
     def exception_hook(self, type, value, exc_traceback):
         self._send_notice(value, exc_traceback, context=self.context)
 
-    def notify(self, exception=None, options={}, context={}):
-        if exception is None:
-            return
-            # TODO: handle user-specified options
+    def notify(self, *args, **kwargs):
+        if kwargs.get('exception', None) is None or len(args) == 0:
+            exception = {
+                'error_class': kwargs.get('error_class', None),
+                'error_message': kwargs.get('error_message', None)
+            }
+        else:
+            exception = kwargs.get('exception', args[0])
 
         merged_context = self.context
-        merged_context.update(context)
+        merged_context.update(kwargs.get('context', {}))
 
         self._send_notice(exception, context=merged_context)
 

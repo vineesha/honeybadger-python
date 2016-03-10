@@ -14,8 +14,8 @@ def error_payload(exception, exc_traceback, config):
     tb = traceback.extract_tb(exc_traceback)
 
     payload = {
-        'class': exception.__class__.__name__,
-        'message': exception.message,
+        'class': type(exception) is dict and exception['error_class'] or exception.__class.__name__,
+        'message': type(exception) is dict and exception['error_message'] or exception.message,
         'backtrace': [dict(number=f[1], file=_filename(f[0]), method=f[2]) for f in reversed(tb)],
         'source': {}
     }
