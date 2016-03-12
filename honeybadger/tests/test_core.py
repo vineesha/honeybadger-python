@@ -1,24 +1,52 @@
-from honeybadger import honeybadger
+import json
+
 from nose.tools import eq_
-from mocker import Mocker, ANY
+from nose.tools import raises
+
+from honeybadger import Honeybadger
+from .utils import setup_mock_urlopen
 
 def test_set_context():
+    honeybadger = Honeybadger()
     honeybadger.set_context(foo='bar')
-    eq_(honeybadger.context, dict(foo='bar'))
+    eq_(honeybadger._context, dict(foo='bar'))
     honeybadger.set_context(bar='foo')
-    eq_(honeybadger.context, dict(foo='bar', bar='foo'))
+    eq_(honeybadger._context, dict(foo='bar', bar='foo'))
+
 
 def test_notify_with_custom_params():
-    def send_notice_wrapper(exception, exc_traceback=None, context={}):
-        eq_(exception, dict(error_class='Exceptin', error_message='Test message.'))
-        eq_(context, dict(foo='bar'))
-        eq_(True, False)
-        return None
+    def test_payload(request):
+        payload = json.loads(request.get_data())
+        eq_(payload['request']['context'], dict(foo='bar'))
+        eq_(payload['error']['class'], 'Exception')
+        eq_(payload['error']['message'], 'Test message.')
 
-    mocker = Mocker()
-    mock_send_notice = mocker.replace(honeybadger._send_notice)
-    mock_send_notice(ANY)
-    mocker.call(send_notice_wrapper)
-    mocker.replay()
+    hb = Honeybadger()
+    setup_mock_urlopen(test_payload)
 
-    honeybadger.notify(error_class='Exception', error_message='Test message.', context={'foo': 'bar'})
+    hb.configure(api_key='aaa')
+    hb.notify(error_class='Exception', error_message='Test message.', context={'foo': 'bar'})
+
+def test_notify_with_exception():
+    def test_payload(request):
+        payload = json.loads(request.get_data())
+        eq_(payload['error']['class'], 'ValueError')
+        eq_(payload['error']['message'], 'Test value error.')
+
+    hb = Honeybadger()
+    setup_mock_urlopen(test_payload)
+
+    hb.configure(api_key='aaa')
+    hb.notify(ValueError('Test value error.'))
+
+def test_notify_context_merging():
+    def test_payload(request):
+        payload = json.loads(request.get_data())
+        eq_(payload['request']['context'], dict(foo='bar', bar='foo'))
+
+    hb = Honeybadger()
+    setup_mock_urlopen(test_payload)
+
+    hb.configure(api_key='aaa')
+    hb.set_context(foo='bar')
+    hb.notify(error_class='Exception', error_message='Test.', context=dict(bar='foo'))

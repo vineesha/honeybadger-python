@@ -113,3 +113,19 @@ honeybadger.configure(api_key='myapikey', project_root='/home/dave/crywolf-djang
 ```
 
 ### `honeybadger.notify`: Send an error notice to Honeybadger
+
+In cases where you'd like to manually send error notices to Honeybadger, this is what you're looking for. You can either pass it an exception as the first argument, or an `error_class`/`error_message` pair of keyword arguments. You can also pass it a custom context dictionary which will get merged with the global context.
+
+#### Examples:
+
+```python
+# with an exception
+mydict = dict(a=1)
+try:
+  print mydict['b']
+except KeyError, exc:
+  honeybadger.notify(exc, context={'foo': 'bar'})
+
+# with custom arguments
+honeybadger.notify(error_class='ValueError', error_message='Something bad happened!')
+```

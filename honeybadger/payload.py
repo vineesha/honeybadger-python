@@ -35,8 +35,6 @@ def error_payload(exception, exc_traceback, config):
         index = min(max(tb[-1][1], source_radius), len(contents) - source_radius)
         payload['source'] = dict(zip(range(index-source_radius+1, index+source_radius+2), contents[index-source_radius:index+source_radius+1]))
 
-
-
     return payload
 
 def server_payload(config):
