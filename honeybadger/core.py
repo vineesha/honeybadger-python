@@ -5,10 +5,10 @@ from .payload import create_payload
 from .config import Configuration
 
 class Honeybadger(object):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request=None):
         self.config = Configuration()
         self._context = {}
-        self.request = kwargs.get('request', None)
+        self.request = request
 
     def _send_notice(self, exception, exc_traceback=None, context={}):
         payload = create_payload(exception, exc_traceback, request=self.request, config=self.config, context=context)
