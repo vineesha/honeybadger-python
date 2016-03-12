@@ -34,21 +34,21 @@ def test_error_payload_source_line_top_of_file():
     setup_mock_traceback(line_no=1)
     config = Configuration()
     payload = error_payload(dict(error_class='Exception', error_message='Test'), None, config)
-    expected = dict(zip(range(1, 6), ["Line {}\n".format(x) for x in range(1, 6)]))
+    expected = dict(zip(range(1, 8), ["Line {}\n".format(x) for x in range(1, 8)]))
     eq_(payload['source'], expected)
 
 def test_error_payload_source_line_bottom_of_file():
     setup_mock_traceback(line_no=10)
     config = Configuration()
     payload = error_payload(dict(error_class='Exception', error_message='Test'), None, config)
-    expected = dict(zip(range(6, 11), ["Line {}\n".format(x) for x in range(6, 11)]))
+    expected = dict(zip(range(5, 11), ["Line {}\n".format(x) for x in range(5, 11)]))
     eq_(payload['source'], expected)
 
 def test_error_payload_source_line_midfile():
     setup_mock_traceback(line_no=5)
     config = Configuration()
     payload = error_payload(dict(error_class='Exception', error_message='Test'), None, config)
-    expected = dict(zip(range(3, 8), ["Line {}\n".format(x) for x in range(3, 8)]))
+    expected = dict(zip(range(3, 10), ["Line {}\n".format(x) for x in range(3, 10)]))
     eq_(payload['source'], expected)
 
 def test_server_payload():

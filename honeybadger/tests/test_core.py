@@ -1,34 +1,24 @@
-from mocker import Mocker, ANY
-import json
-import logging
+from honeybadger import honeybadger
 from nose.tools import eq_
+from mocker import Mocker, ANY
 
-from honeybadger.connection import send_notice
-from honeybadger.config import Configuration
+def test_set_context():
+    honeybadger.set_context(foo='bar')
+    eq_(honeybadger.context, dict(foo='bar'))
+    honeybadger.set_context(bar='foo')
+    eq_(honeybadger.context, dict(foo='bar', bar='foo'))
 
-def get_mock_response(status=201):
-    m = Mocker()
-    response = m.mock()
-    response.getcode()
-    m.result(status)
-    m.replay()
-    return response
-
-def test_connection_success():
-    api_key = 'badgerbadgermushroom'
-    payload = {'test': 'payload'}
-    config = Configuration(api_key=api_key)
-
-    def test_request(request):
-        eq_(request.get_header('X-api-key'), api_key)
-        eq_(request.get_full_url(), '{}/v1/notices/'.format(config.endpoint))
-        eq_(request.get_data(), json.dumps(payload))
-        return get_mock_response()
+def test_notify_with_custom_params():
+    def send_notice_wrapper(exception, exc_traceback=None, context={}):
+        eq_(exception, dict(error_class='Exceptin', error_message='Test message.'))
+        eq_(context, dict(foo='bar'))
+        eq_(True, False)
+        return None
 
     mocker = Mocker()
-    urlopen = mocker.replace('urllib2.urlopen')
-    urlopen(ANY)
-    mocker.call(test_request)
+    mock_send_notice = mocker.replace(honeybadger._send_notice)
+    mock_send_notice(ANY)
+    mocker.call(send_notice_wrapper)
     mocker.replay()
 
-    send_notice(config, payload)
+    honeybadger.notify(error_class='Exception', error_message='Test message.', context={'foo': 'bar'})

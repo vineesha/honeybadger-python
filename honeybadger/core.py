@@ -18,7 +18,7 @@ class Honeybadger(object):
         self._send_notice(value, exc_traceback, context=self.context)
 
     def notify(self, *args, **kwargs):
-        if kwargs.get('exception', None) is None or len(args) == 0:
+        if kwargs.get('exception', None) is None and len(args) == 0:
             exception = {
                 'error_class': kwargs.get('error_class', None),
                 'error_message': kwargs.get('error_message', None)

@@ -19,25 +19,23 @@ def error_payload(exception, exc_traceback, config):
         return name.replace(config.project_root, '[PROJECT_ROOT]')
 
     tb = traceback.extract_tb(exc_traceback)
+    source_radius = 3 # configurable later...
 
     payload = {
-        'class': type(exception) is dict and exception['error_class'] or exception.__class.__name__,
+        'class': type(exception) is dict and exception['error_class'] or exception.__class__.__name__,
         'message': type(exception) is dict and exception['error_message'] or exception.message,
         'backtrace': [dict(number=f[1], file=_filename(f[0]), method=f[2]) for f in reversed(tb)],
         'source': {}
     }
 
-    source_index = (tb[-1][1] - 3) >= 0 and tb[-1][1] - 3 or 0
+    if len(tb) > 0:
+        with open(tb[-1][0], 'r') as f:
+            contents = f.readlines()
 
-    with open(tb[-1][0], 'r') as f:
-        contents = f.readlines()
+        index = min(max(tb[-1][1], source_radius), len(contents) - source_radius)
+        payload['source'] = dict(zip(range(index-source_radius+1, index+source_radius+2), contents[index-source_radius:index+source_radius+1]))
 
-    if source_index+5 > len(contents):
-        source_index -= (source_index+5) - len(contents)
 
-    print source_index
-
-    payload['source'] = dict(zip(range(source_index+1, source_index+6), contents[source_index:source_index+6]))
 
     return payload
 
@@ -108,7 +106,7 @@ def create_payload(exception, exc_traceback=None, config=None, request=None, con
     if exc_traceback is None:
         exc_traceback = sys.exc_info()[2]
 
-    if request.__module__ == 'django.http.request':
+    if request is not None and request.__module__ == 'django.http.request':
         request_payload = django_request_payload
     else:
         # TODO: figure out Flask support
