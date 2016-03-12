@@ -49,3 +49,4 @@ class Honeybadger(object):
             yield
         except Exception, e:
             self._send_notice(e, context=merged_context)
+            raise
