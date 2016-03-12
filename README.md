@@ -15,14 +15,6 @@ Install honeybadger with pip.
 
 `$ pip install honeybadger`
 
-### Plain Python
-
-In a plain Python application, simply import honeybadger and configure it with your API key.
-
-```python
-from honeybadger import honeybadger
-honeybadger.configure(api_key='myapikey')
-```
 
 ### Django
 
@@ -44,6 +36,18 @@ HONEYBADGER = {
 ```
 
 Once set up, all `HttpRequest` objects will have an instance of honeybadger as `request.honeybadger`. See below for public API details.
+
+### Other frameworks / plain Python app
+
+Django is the only explicitly supported framework at the moment. For other frameworks (Flask, web2py, etc.) or a plain Python script, simply import honeybadger and configure it with your API key. Honeybadger uses a global exception hook to automatically report any uncaught exceptions.
+
+```python
+from honeybadger import honeybadger
+honeybadger.configure(api_key='myapikey')
+
+raise Exception, "This will get reported!"
+```
+
 ### All set!
 
 That's it! For additional configuration options, keep reading.
