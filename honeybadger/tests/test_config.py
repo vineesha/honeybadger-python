@@ -1,0 +1,23 @@
+import os
+from nose.tools import raises
+
+from honeybadger.config import Configuration
+
+def test_12factor_overrides_defaults():
+    os.environ['HONEYBADGER_ENVIRONMENT'] = 'staging'
+    c = Configuration()
+    assert c.environment == 'staging'
+
+def test_args_overrides_defaults():
+    c = Configuration(environment='staging')
+    assert c.environment == 'staging'
+
+def test_args_overrides_12factor():
+    os.environ['HONEYBADGER_ENVIRONMENT'] = 'test'
+    c = Configuration(environment='staging')
+    assert c.environment == 'staging'
+
+@raises(AttributeError)
+def test_can_only_set_valid_options():
+    c = Configuration(foo='bar')
+    print c.foo
