@@ -7,7 +7,7 @@ from .config import Configuration
 class Honeybadger(object):
     def __init__(self, *args, **kwargs):
         self.config = Configuration()
-        self.context = {}
+        self._context = {}
         self.request = kwargs.get('request', None)
 
     def _send_notice(self, exception, exc_traceback=None, context={}):
@@ -15,7 +15,7 @@ class Honeybadger(object):
         send_notice(self.config, payload)
 
     def exception_hook(self, type, value, exc_traceback):
-        self._send_notice(value, exc_traceback, context=self.context)
+        self._send_notice(value, exc_traceback, context=self._context)
 
     def notify(self, *args, **kwargs):
         if kwargs.get('exception', None) is None and len(args) == 0:
@@ -26,7 +26,7 @@ class Honeybadger(object):
         else:
             exception = kwargs.get('exception', args[0])
 
-        merged_context = self.context
+        merged_context = self._context
         merged_context.update(kwargs.get('context', {}))
 
         self._send_notice(exception, context=merged_context)
@@ -35,14 +35,14 @@ class Honeybadger(object):
         self.config.set_config_from_dict(kwargs)
 
     def set_context(self, **kwargs):
-        self.context.update(kwargs)
+        self._context.update(kwargs)
 
     def reset_context(self):
-        self.context = {}
+        self._context = {}
 
     @contextmanager
     def context(self, **kwargs):
-        merged_context = self.context
+        merged_context = self._context
         merged_context.update(kwargs)
 
         try:
