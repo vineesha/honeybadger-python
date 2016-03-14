@@ -1,6 +1,7 @@
 import sys
 import traceback
 import os
+import re
 from datetime import datetime
 
 import psutil
@@ -104,7 +105,7 @@ def create_payload(exception, exc_traceback=None, config=None, request=None, con
     if exc_traceback is None:
         exc_traceback = sys.exc_info()[2]
 
-    if request is not None and request.__module__ == 'django.http.request':
+    if request is not None and re.match(r'^django\.', request.__module__):
         request_payload = django_request_payload
     else:
         # TODO: figure out Flask support
