@@ -85,11 +85,11 @@ This method clears the global context dictionary.
 ```python
 # From a Django view
 def my_view(request):
-  request.honeybadger.clear_context()
+  request.honeybadger.reset_context()
 
 # in Plain Python
 from honeybadger import honeybadger
-honeybadger.clear_context()
+honeybadger.reset_context()
 ```
 
 ### `honeybadger.context`: Python context manager interface
