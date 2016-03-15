@@ -58,6 +58,8 @@ All of Honeybadger's configuration options can be set via environment variables 
 
 ## Configuration Options
 
+TODO
+
 ## Public Methods
 
 ### `honeybadger.set_context`: Set global context data
