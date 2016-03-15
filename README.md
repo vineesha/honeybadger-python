@@ -135,3 +135,37 @@ except KeyError, exc:
 # with custom arguments
 honeybadger.notify(error_class='ValueError', error_message='Something bad happened!')
 ```
+
+## Development
+
+After cloning the repo, run:
+
+```sh
+python setup.py develop
+```
+
+To run the unit tests:
+
+```sh
+python setup.py test
+```
+
+## Contributing
+
+If you're adding a new feature, please [submit an issue](https://github.com/honeybadger-io/honeybadger-python/issues/new) as a preliminary step; that way you can be (moderately) sure that your pull request will be accepted.
+
+### To contribute your code:
+
+1. Fork it.
+2. Create a topic branch `git checkout -b my_branch`
+3. Commit your changes `git commit -am "Boom"`
+3. Push to your branch `git push origin my_branch`
+4. Send a [pull request](https://github.com/honeybadger-io/honeybadger-python/pulls)
+
+## Changelog
+
+See https://github.com/honeybadger-io/honeybadger-python/blob/master/CHANGELOG.md
+
+## License
+
+This project is MIT licensed. See the [LICENSE](https://github.com/honeybadger-io/honeybadger-python/blob/master/LICENSE) file in this repository for details.
