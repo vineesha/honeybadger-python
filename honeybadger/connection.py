@@ -1,6 +1,7 @@
 import logging
 import urllib2
 import json
+from .utils import StringReprJSONEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ def send_notice(config, payload):
     request.add_header('Content-Type', 'application/json')
     request.add_header('Accept', 'application/json')
 
-    request.add_data(json.dumps(payload)) # request.add_data(str(payload))
+    request.add_data(json.dumps(payload, cls=StringReprJSONEncoder)) # request.add_data(str(payload))
     response = urllib2.urlopen(request)
 
     status = response.getcode()

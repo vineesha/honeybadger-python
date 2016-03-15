@@ -7,13 +7,8 @@ from datetime import datetime
 import psutil
 
 from .version import __version__
+from .utils import filter_dict
 
-def filter_dict(data, filter_keys):
-    filter_keys = set(data.keys())
-    for key in filter_keys:
-        if data.has_key(key):
-            data[key] = "[FILTERED]"
-    return data
 
 def error_payload(exception, exc_traceback, config):
     def _filename(name):
@@ -79,6 +74,7 @@ def django_request_payload(request, context, config):
         'cgi_data': dict(request.META),
         'context': context
     }
+
 
     if hasattr(request, 'session'):
         payload['session'] = filter_dict(dict(request.session), config.params_filters)
