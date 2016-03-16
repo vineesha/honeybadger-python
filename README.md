@@ -18,14 +18,16 @@ Install honeybadger with pip.
 
 ### Django
 
-In a Django application, add the Honeybadger Django middleware to your `MIDDLEWARE_CLASSES` config variable:
+In a Django application, add the Honeybadger Django middleware to *the top* of your `MIDDLEWARE_CLASSES` config variable:
 
 ```python
 MIDDLEWARE_CLASSES = (
+  'honeybadger.middleware.DjangoHoneybadgerMiddleware',
   ...
-  'honeybadger.middleware.DjangoHoneybadgerMiddleware'
 )
 ```
+
+It's important that the Honeybadger middleware is at the top, so that it wraps the entire request process, including all other middlewares.
 
 You'll also need to add a new `HONEYBADGER` config variable to your `settings.py` to specify your API key:
 
@@ -34,8 +36,6 @@ HONEYBADGER = {
   'API_KEY': 'myapikey'
 }
 ```
-
-Once set up, all `HttpRequest` objects will have an instance of honeybadger as `request.honeybadger`. See below for public API details.
 
 ### Other frameworks / plain Python app
 
@@ -69,11 +69,6 @@ This method allows you to send additional information to the Honeybadger API to 
 #### Examples:
 
 ```python
-# From a Django view
-def my_view(request):
-  request.honeybadger.set_context(user_id=request.user.id)
-
-# In plain Python
 from honeybadger import honeybadger
 honeybadger.set_context(my_data='my_value')
 ```
@@ -85,11 +80,6 @@ This method clears the global context dictionary.
 #### Examples:
 
 ```python
-# From a Django view
-def my_view(request):
-  request.honeybadger.reset_context()
-
-# in Plain Python
 from honeybadger import honeybadger
 honeybadger.reset_context()
 ```
@@ -102,8 +92,9 @@ What if you don't want to set global context data? You can use Python context ma
 
 ```python
 # from a Django view
+from honeybadger import honeybadger
 def my_view(request):
-  with request.honeybadger.context(user_email=request.POST.get('user_email', None)):
+  with honeybadger.context(user_email=request.POST.get('user_email', None)):
     form = UserForm(request.POST)
     ...
 ```
