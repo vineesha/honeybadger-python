@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import threading
+import sys
 
 from .connection import send_notice
 from .payload import create_payload
@@ -19,8 +20,13 @@ class Honeybadger(object):
     def request(self, request):
         self.thread_local.request = request
 
+    def wrap_excepthook(self, func):
+        self.existing_except_hook = func
+        sys.excepthook = self.exception_hook
+
     def exception_hook(self, type, value, exc_traceback):
         self._send_notice(value, exc_traceback, context=self._context)
+        self.existing_except_hook(type, value, exc_traceback)
 
     def notify(self, exception=None, error_class=None, error_message=None, context={}):
         if exception is None:

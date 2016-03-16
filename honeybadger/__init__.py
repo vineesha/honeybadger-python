@@ -14,4 +14,4 @@ from .version import __version__
 __all__ = ['honeybadger', '__version__']
 
 honeybadger = Honeybadger()
-sys.excepthook = honeybadger.exception_hook
+honeybadger.wrap_excepthook(sys.excepthook)
