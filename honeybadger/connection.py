@@ -1,6 +1,7 @@
 import logging
 import urllib2
 import json
+import threading
 from .utils import StringReprJSONEncoder
 
 logger = logging.getLogger(__name__)
@@ -15,10 +16,14 @@ def send_notice(config, payload):
     request.add_header('X-Api-Key', config.api_key)
     request.add_header('Content-Type', 'application/json')
     request.add_header('Accept', 'application/json')
-
     request.add_data(json.dumps(payload, cls=StringReprJSONEncoder)) # request.add_data(str(payload))
-    response = urllib2.urlopen(request)
 
-    status = response.getcode()
-    if status != 201:
-        logger.error("Received error response [{}] from Honeybadger API.".format(status))
+    def send_request():
+        response = urllib2.urlopen(request)
+
+        status = response.getcode()
+        if status != 201:
+            logger.error("Received error response [{}] from Honeybadger API.".format(status))
+
+    t = threading.Thread(target=send_request)
+    t.start()

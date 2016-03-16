@@ -56,6 +56,38 @@ That's it! For additional configuration options, keep reading.
 
 All of Honeybadger's configuration options can be set via environment variables with the `HONEYBADGER` prefix. For example, the `api_key` option can be set via the `HONEYBADGER_API_KEY` environment variable.
 
+## Logging
+
+By default, Honeybadger uses the `logging.NullHandler` for logging so it doesn't make any assumptions about your logging setup. In Django, add a `honeybadger` section to your `LOGGING` config to enable Honeybadger logging. For example:
+
+```python
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/path/to/django/debug.log',
+        },
+    },
+    'loggers': {
+        'honeybadger': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+```
+
+For other frameworks or a plain Python script, you can use `logging.dictConfig` or explicitly configure it like so:
+
+```python
+import logging
+logging.getLogger('honeybadger').addHandler(logging.StreamHandler)
+```
+
 ## Configuration Options
 
 TODO

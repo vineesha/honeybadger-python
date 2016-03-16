@@ -1,10 +1,13 @@
 from contextlib import contextmanager
 import threading
 import sys
+import logging
 
 from .connection import send_notice
 from .payload import create_payload
 from .config import Configuration
+
+logging.getLogger('honeybadger').addHandler(logging.NullHandler())
 
 class Honeybadger(object):
     def __init__(self):
