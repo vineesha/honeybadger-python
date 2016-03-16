@@ -10,6 +10,7 @@ class Honeybadger(object):
         self.config = Configuration()
         self._context = {}
         self.thread_local = threading.local()
+        self.thread_local.request = None
 
     def _send_notice(self, exception, exc_traceback=None, context={}):
         payload = create_payload(exception, exc_traceback, request=self.thread_local.request, config=self.config, context=context)
