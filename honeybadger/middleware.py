@@ -1,18 +1,22 @@
-from .core import Honeybadger
+from honeybadger import honeybadger
 
 class DjangoHoneybadgerMiddleware(object):
-    def process_request(self, request):
-        request.honeybadger = Honeybadger(request=request)
-
+    def __init__(self):
         from django.conf import settings
         config_kwargs = dict([(k.lower(), v) for k, v in getattr(settings, 'HONEYBADGER', {}).items()])
-        request.honeybadger.configure(**config_kwargs)
+        honeybadger.configure(**config_kwargs)
 
+    def process_request(self, request):
+        honeybadger.request(request)
         return None
 
     def process_exception(self, request, exception):
-        request.honeybadger.notify(exception)
+        honeybadger.notify(exception)
         return None
+
+    def process_response(self, request, response):
+        honeybadger.reset_context()
+        return response
 
 # TODO: finish Flask support
 class FlaskHoneybadgerMiddleware(object):

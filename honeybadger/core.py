@@ -1,18 +1,22 @@
 from contextlib import contextmanager
+import threading
 
 from .connection import send_notice
 from .payload import create_payload
 from .config import Configuration
 
 class Honeybadger(object):
-    def __init__(self, request=None):
+    def __init__(self):
         self.config = Configuration()
         self._context = {}
-        self.request = request
+        self.thread_local = threading.local()
 
     def _send_notice(self, exception, exc_traceback=None, context={}):
-        payload = create_payload(exception, exc_traceback, request=self.request, config=self.config, context=context)
+        payload = create_payload(exception, exc_traceback, request=self.thread_local.request, config=self.config, context=context)
         send_notice(self.config, payload)
+
+    def request(self, request):
+        self.thread_local.request = request
 
     def exception_hook(self, type, value, exc_traceback):
         self._send_notice(value, exc_traceback, context=self._context)
