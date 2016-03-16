@@ -14,7 +14,20 @@ def error_payload(exception, exc_traceback, config):
     def _filename(name):
         return name.replace(config.project_root, '[PROJECT_ROOT]')
 
-    tb = traceback.extract_tb(exc_traceback)
+    def is_not_honeybadger_frame(frame):
+        # TODO: is there a better way to do this?
+        # simply looking for 'honeybadger' in the path doesn't seem
+        # specific enough but this approach seems too specific and
+        # would need to be updated if we re-factored the call stack
+        # for building a payload.
+        return not 'honeybadger' in frame[0] and not frame[2] in ['notify', '_send_notice', 'create_payload', 'error_payload']
+
+
+    if exc_traceback:
+        tb = traceback.extract_tb(exc_traceback)
+    else:
+        tb = [f for f in traceback.extract_stack() if is_not_honeybadger_frame(f)]
+
     source_radius = 3 # configurable later...
 
     payload = {
