@@ -5,6 +5,7 @@ class DjangoHoneybadgerMiddleware(object):
         from django.conf import settings
         config_kwargs = dict([(k.lower(), v) for k, v in getattr(settings, 'HONEYBADGER', {}).items()])
         honeybadger.configure(**config_kwargs)
+        honeybadger.config.set_12factor_config() # environment should override Django settings
 
     def process_request(self, request):
         honeybadger.begin_request(request)
