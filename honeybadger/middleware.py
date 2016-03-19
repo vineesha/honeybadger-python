@@ -7,7 +7,7 @@ class DjangoHoneybadgerMiddleware(object):
         honeybadger.configure(**config_kwargs)
 
     def process_request(self, request):
-        honeybadger.request(request)
+        honeybadger.begin_request(request)
         return None
 
     def process_exception(self, request, exception):
