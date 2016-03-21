@@ -52,10 +52,6 @@ raise Exception, "This will get reported!"
 
 That's it! For additional configuration options, keep reading.
 
-## Configuring with Environment Variables (12-factor style)
-
-All of Honeybadger's configuration options can be set via environment variables with the `HONEYBADGER` prefix. For example, the `api_key` option can be set via the `HONEYBADGER_API_KEY` environment variable.
-
 ## Logging
 
 By default, Honeybadger uses the `logging.NullHandler` for logging so it doesn't make any assumptions about your logging setup. In Django, add a `honeybadger` section to your `LOGGING` config to enable Honeybadger logging. For example:
@@ -88,9 +84,26 @@ import logging
 logging.getLogger('honeybadger').addHandler(logging.StreamHandler())
 ```
 
-## Configuration Options
+## Configuration
 
-TODO
+To set configuration options, use the `honeybadger.configure` method, like so:
+
+```python
+honeybadger.configure(api_key='your api key', environment='production')
+```
+
+All of Honeybadger's configuration options can also be set via environment variables with the `HONEYBADGER` prefix (12-factor style). For example, the `api_key` option can be set via the `HONEYBADGER_API_KEY` environment variable.
+
+The following options are available to you:
+
+|  Name | Type | Default | Example | Environment variable |
+| ----- | ---- | ------- | ------- | -------------------- |
+| api_key | `str` | `""` | `"badgers"` | `HONEYBADGER_API_KEY` |
+| project_root | `str` | The current working directory | `"/path/to/project"` | `HONEYBADGER_PROJECT_ROOT` |
+| environment | `str` | `"production"` | `"staging"` | `HONEYBADGER_ENVIRONMENT` |
+| hostname | `str` | The hostname of the current server. | `"badger01"` | `HONEYBADGER_HOSTNAME` |
+| endpoint | `str` | `"https://api.honeybadger.io"` | `"https://honeybadger.example.com/"` | `HONEYBADGER_ENDPOINT` |
+| params_filters | `list` | `['password', 'password_confirmation', 'credit_card']` | `['super', 'secret', 'keys']` | `HONEYBADGER_PARAMS_FILTERS` |
 
 ## Public Methods
 
