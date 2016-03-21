@@ -7,10 +7,14 @@ from mocker import Mocker, ANY
 import os
 # TODO: figure out how to run Django tests?
 
-def setup_mock_traceback(line_no=5):
+def setup_mock_traceback(method='traceback.extract_stack', line_no=5):
     mocker = Mocker()
-    obj = mocker.replace('traceback.extract_tb')
-    obj(ANY)
+    obj = mocker.replace(method)
+
+    if 'extract_tb' in method:
+        obj(ANY)
+    else:
+        obj()
 
     path = os.path.dirname(__file__)
     tb_data = []
@@ -19,7 +23,6 @@ def setup_mock_traceback(line_no=5):
 
     tb_data.append(('/fake/path/fake_file.py', 15, 'fake_method'))
     tb_data.append((os.path.join(path, 'payload_fixture.txt'), line_no, 'fixture_method'))
-
     mocker.result(tb_data)
     mocker.replay()
 

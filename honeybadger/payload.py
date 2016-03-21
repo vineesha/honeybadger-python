@@ -20,7 +20,7 @@ def error_payload(exception, exc_traceback, config):
         # specific enough but this approach seems too specific and
         # would need to be updated if we re-factored the call stack
         # for building a payload.
-        return not 'honeybadger' in frame[0] and not frame[2] in ['notify', '_send_notice', 'create_payload', 'error_payload']
+        return not ('honeybadger' in frame[0] and frame[2] in ['notify', '_send_notice', 'create_payload', 'error_payload'])
 
 
     if exc_traceback:
@@ -29,7 +29,7 @@ def error_payload(exception, exc_traceback, config):
         tb = [f for f in traceback.extract_stack() if is_not_honeybadger_frame(f)]
 
     source_radius = 3 # configurable later...
-
+    print tb
     payload = {
         'class': type(exception) is dict and exception['error_class'] or exception.__class__.__name__,
         'message': type(exception) is dict and exception['error_message'] or exception.message,

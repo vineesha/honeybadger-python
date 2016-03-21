@@ -9,9 +9,9 @@ from .utils import setup_mock_urlopen
 def test_set_context():
     honeybadger = Honeybadger()
     honeybadger.set_context(foo='bar')
-    eq_(honeybadger._context, dict(foo='bar'))
+    eq_(honeybadger.thread_local.context, dict(foo='bar'))
     honeybadger.set_context(bar='foo')
-    eq_(honeybadger._context, dict(foo='bar', bar='foo'))
+    eq_(honeybadger.thread_local.context, dict(foo='bar', bar='foo'))
 
 
 def test_notify_with_custom_params():
