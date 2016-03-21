@@ -40,7 +40,6 @@ class Honeybadger(object):
                 'error_message': error_message
             }
 
-        # import pdb; pdb.set_trace()
         merged_context = self.thread_local.context
         merged_context.update(context)
 
