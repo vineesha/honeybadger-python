@@ -85,7 +85,7 @@ For other frameworks or a plain Python script, you can use `logging.dictConfig` 
 
 ```python
 import logging
-logging.getLogger('honeybadger').addHandler(logging.StreamHandler)
+logging.getLogger('honeybadger').addHandler(logging.StreamHandler())
 ```
 
 ## Configuration Options
