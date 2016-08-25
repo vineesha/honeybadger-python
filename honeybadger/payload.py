@@ -32,7 +32,7 @@ def error_payload(exception, exc_traceback, config):
     print tb
     payload = {
         'class': type(exception) is dict and exception['error_class'] or exception.__class__.__name__,
-        'message': type(exception) is dict and exception['error_message'] or str(exception)
+        'message': type(exception) is dict and exception['error_message'] or str(exception),
         'backtrace': [dict(number=f[1], file=_filename(f[0]), method=f[2]) for f in reversed(tb)],
         'source': {}
     }
