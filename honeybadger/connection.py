@@ -1,8 +1,14 @@
 import logging
-import urllib2
 import json
 import threading
 from .utils import StringReprJSONEncoder
+
+try:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+except ImportError:
+    # Fall back to Python 2's urllib2
+    import urllib2
 
 logger = logging.getLogger(__name__)
 
