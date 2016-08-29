@@ -29,7 +29,7 @@ def error_payload(exception, exc_traceback, config):
         tb = [f for f in traceback.extract_stack() if is_not_honeybadger_frame(f)]
 
     source_radius = 3 # configurable later...
-    print tb
+    print(tb)
     payload = {
         'class': type(exception) is dict and exception['error_class'] or exception.__class__.__name__,
         'message': type(exception) is dict and exception['error_message'] or exception.message,
