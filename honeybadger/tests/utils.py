@@ -1,21 +1,9 @@
-from mocker import Mocker
-from mocker import ANY
+from contextlib import contextmanager
+from mock import patch
 
-def setup_mock_urlopen(func, status=201):
-    def func_wrap(request):
-        func(request)
-        return get_mock_response(status)
-
-    mocker = Mocker()
-    urlopen = mocker.replace('urllib2.urlopen')
-    urlopen(ANY)
-    mocker.call(func_wrap)
-    mocker.replay()
-
-def get_mock_response(status=201):
-    m = Mocker()
-    response = m.mock()
-    response.getcode()
-    m.result(status)
-    m.replay()
-    return response
+@contextmanager
+def mock_urlopen(func, status=201):
+    with patch('six.moves.urllib.request.urlopen') as request_mock:
+        yield request_mock
+        ((request_object,), mock_kwargs) = request_mock.call_args
+        func(request_object)
