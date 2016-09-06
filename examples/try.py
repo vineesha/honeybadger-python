@@ -6,6 +6,7 @@
 
 # $ pip install honeybadger
 # $ HONEYBADGER_API_KEY=your-api-key python try.py
+from __future__ import print_function
 from honeybadger import honeybadger
 
 # Uncomment the following line or use the HONEYBADGER_API_KEY environment
@@ -18,8 +19,8 @@ logging.getLogger('honeybadger').addHandler(logging.StreamHandler())
 def method_two():
     mydict = dict(a=1)
     try:
-      print mydict['b']
-    except KeyError, exc:
+      print(mydict['b'])
+    except KeyError as exc:
       honeybadger.notify(exc, context={'foo': 'bar'})
 
 def method_one():

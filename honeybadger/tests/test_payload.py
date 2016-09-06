@@ -1,3 +1,5 @@
+from six.moves import range
+from six.moves import zip
 from contextlib import contextmanager
 import os
 

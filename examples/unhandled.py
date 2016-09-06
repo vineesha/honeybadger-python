@@ -6,6 +6,7 @@
 
 # $ pip install honeybadger
 # $ HONEYBADGER_API_KEY=your-api-key python unhandled.py
+from __future__ import print_function
 from honeybadger import honeybadger
 
 # Uncomment the following line or use the HONEYBADGER_API_KEY environment
@@ -17,7 +18,7 @@ logging.getLogger('honeybadger').addHandler(logging.StreamHandler())
 
 def method_two():
     mydict = dict(a=1)
-    print mydict['b']
+    print(mydict['b'])
 
 def method_one():
     method_two()

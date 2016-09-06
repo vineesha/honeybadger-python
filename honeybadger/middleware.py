@@ -1,11 +1,12 @@
 from honeybadger import honeybadger
+from six import iteritems
 
 class DjangoHoneybadgerMiddleware(object):
     def __init__(self):
         from django.conf import settings
         if getattr(settings, 'DEBUG'):
             honeybadger.configure(environment='development')
-        config_kwargs = dict([(k.lower(), v) for k, v in getattr(settings, 'HONEYBADGER', {}).items()])
+        config_kwargs = dict([(k.lower(), v) for (k, v) in iteritems(getattr(settings, 'HONEYBADGER', {}))])
         honeybadger.configure(**config_kwargs)
         honeybadger.config.set_12factor_config() # environment should override Django settings
 
