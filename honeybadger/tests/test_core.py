@@ -1,6 +1,6 @@
 import json
 
-from nose.tools import eq_
+from nose.tools import eq_, ok_
 from nose.tools import raises
 
 from .utils import mock_urlopen
@@ -26,7 +26,7 @@ def test_notify_with_custom_params():
     with mock_urlopen(test_payload) as request_mock:
         hb.configure(api_key='aaa')
         hb.notify(error_class='Exception', error_message='Test message.', context={'foo': 'bar'})
-        assert request_mock.called == True
+        eq_(request_mock.call_count, 1)
 
 
 
@@ -41,7 +41,7 @@ def test_notify_with_exception():
     with mock_urlopen(test_payload) as request_mock:
         hb.configure(api_key='aaa')
         hb.notify(ValueError('Test value error.'))
-        assert request_mock.called == True
+        eq_(request_mock.call_count, 1)
 
 def test_notify_context_merging():
     def test_payload(request):
@@ -54,4 +54,4 @@ def test_notify_context_merging():
         hb.configure(api_key='aaa')
         hb.set_context(foo='bar')
         hb.notify(error_class='Exception', error_message='Test.', context=dict(bar='foo'))
-        assert request_mock.called == True
+        eq_(request_mock.call_count, 1)
