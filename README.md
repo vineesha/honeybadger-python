@@ -5,7 +5,7 @@ When any uncaught exceptions occur, Honeybadger will send the data off to the Ho
 
 ## Supported Versions
 
-Tested with Django 1.9 and Python 2.7. Django integration is done via middleware and so it should work with almost any version.
+Tested with Django 1.9 and Python 2.7 through 3.5. Django integration is done via middleware so it should work with almost any version.
 
 ## Getting Started
 
