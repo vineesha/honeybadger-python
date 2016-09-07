@@ -2,6 +2,7 @@ import logging
 import json
 import threading
 from six.moves.urllib import request
+from six import b
 
 from .utils import StringReprJSONEncoder
 
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def send_notice(config, payload):
     request_object = request.Request(url="{}/v1/notices/".format(config.endpoint),
-                                        data=json.dumps(payload, cls=StringReprJSONEncoder))
+                                        data=b(json.dumps(payload, cls=StringReprJSONEncoder)))
 
     if not config.api_key:
         logger.error("Honeybadger API key missing from configuration: cannot report errors.")

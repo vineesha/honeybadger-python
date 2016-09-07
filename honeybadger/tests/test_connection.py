@@ -1,7 +1,7 @@
 import json
 import logging
 from nose.tools import eq_
-
+from six import b
 from .utils import mock_urlopen
 
 from honeybadger.connection import send_notice
@@ -15,7 +15,7 @@ def test_connection_success():
     def test_request(request_object):
         eq_(request_object.get_header('X-api-key'), api_key)
         eq_(request_object.get_full_url(), '{}/v1/notices/'.format(config.endpoint))
-        eq_(request_object.data, json.dumps(payload))
+        eq_(request_object.data, b(json.dumps(payload)))
 
     with mock_urlopen(test_request) as request_mock:
         send_notice(config, payload)
