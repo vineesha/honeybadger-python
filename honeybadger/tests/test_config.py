@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 from nose.tools import raises
 
@@ -27,4 +29,4 @@ def test_config_var_types_are_accurate():
 @raises(AttributeError)
 def test_can_only_set_valid_options():
     c = Configuration(foo='bar')
-    print c.foo
+    print(c.foo)

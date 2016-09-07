@@ -1,21 +1,20 @@
-from mocker import Mocker
-from mocker import ANY
+from contextlib import contextmanager
+from mock import patch
+from mock import DEFAULT
+import six
+import time
+from threading import Event
 
-def setup_mock_urlopen(func, status=201):
-    def func_wrap(request):
-        func(request)
-        return get_mock_response(status)
+@contextmanager
+def mock_urlopen(func, status=201):
+    mock_called_event = Event()
 
-    mocker = Mocker()
-    urlopen = mocker.replace('urllib2.urlopen')
-    urlopen(ANY)
-    mocker.call(func_wrap)
-    mocker.replay()
+    def mock_was_called(*args, **kwargs):
+        mock_called_event.set()
+        return DEFAULT
 
-def get_mock_response(status=201):
-    m = Mocker()
-    response = m.mock()
-    response.getcode()
-    m.result(status)
-    m.replay()
-    return response
+    with patch('six.moves.urllib.request.urlopen', side_effect=mock_was_called) as request_mock:
+        yield request_mock
+        mock_called_event.wait()
+        ((request_object,), mock_kwargs) = request_mock.call_args
+        func(request_object)

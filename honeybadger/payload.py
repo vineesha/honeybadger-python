@@ -2,6 +2,10 @@ import sys
 import traceback
 import os
 import re
+import logging
+from six.moves import range
+from six.moves import zip
+from io import open
 from datetime import datetime
 
 import psutil
@@ -9,6 +13,7 @@ import psutil
 from .version import __version__
 from .utils import filter_dict
 
+logger = logging.getLogger('honeybadger.payload')
 
 def error_payload(exception, exc_traceback, config):
     def _filename(name):
@@ -29,7 +34,9 @@ def error_payload(exception, exc_traceback, config):
         tb = [f for f in traceback.extract_stack() if is_not_honeybadger_frame(f)]
 
     source_radius = 3 # configurable later...
-    print tb
+
+    logger.debug(tb)
+
     payload = {
         'class': type(exception) is dict and exception['error_class'] or exception.__class__.__name__,
         'message': type(exception) is dict and exception['error_message'] or str(exception),
@@ -38,7 +45,7 @@ def error_payload(exception, exc_traceback, config):
     }
 
     if len(tb) > 0:
-        with open(tb[-1][0], 'r') as f:
+        with open(tb[-1][0], 'rt', encoding='utf-8') as f:
             contents = f.readlines()
 
         index = min(max(tb[-1][1], source_radius), len(contents) - source_radius)

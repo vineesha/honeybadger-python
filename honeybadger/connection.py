@@ -1,25 +1,27 @@
 import logging
-import urllib2
 import json
 import threading
+from six.moves.urllib import request
+
 from .utils import StringReprJSONEncoder
+
 
 logger = logging.getLogger(__name__)
 
 def send_notice(config, payload):
-    request = urllib2.Request(url="{}/v1/notices/".format(config.endpoint))
+    request_object = request.Request(url="{}/v1/notices/".format(config.endpoint),
+                                        data=json.dumps(payload, cls=StringReprJSONEncoder))
 
     if not config.api_key:
         logger.error("Honeybadger API key missing from configuration: cannot report errors.")
         return
 
-    request.add_header('X-Api-Key', config.api_key)
-    request.add_header('Content-Type', 'application/json')
-    request.add_header('Accept', 'application/json')
-    request.add_data(json.dumps(payload, cls=StringReprJSONEncoder)) # request.add_data(str(payload))
+    request_object.add_header('X-Api-Key', config.api_key)
+    request_object.add_header('Content-Type', 'application/json')
+    request_object.add_header('Accept', 'application/json')
 
     def send_request():
-        response = urllib2.urlopen(request)
+        response = request.urlopen(request_object)
 
         status = response.getcode()
         if status != 201:

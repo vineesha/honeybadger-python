@@ -1,5 +1,7 @@
 import os
 import socket
+from six.moves import zip
+from six import iteritems
 
 class Configuration(object):
     OPTIONS = (
@@ -25,7 +27,7 @@ class Configuration(object):
         self.set_config_from_dict(kwargs)
 
     def set_12factor_config(self):
-        for option in zip(*self.OPTIONS)[0]:
+        for option in list(zip(*self.OPTIONS))[0]:
             val = os.environ.get('HONEYBADGER_{}'.format(option.upper()), getattr(self, option))
             option_types = dict(self.OPTIONS)
 
@@ -41,6 +43,6 @@ class Configuration(object):
             setattr(self, option, val)
 
     def set_config_from_dict(self, config):
-        for key, value in config.items():
-            if key in zip(*self.OPTIONS)[0]:
+        for (key, value) in iteritems(config):
+            if key in list(zip(*self.OPTIONS))[0]:
                 setattr(self, key, value)

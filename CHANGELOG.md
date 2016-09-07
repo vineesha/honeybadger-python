@@ -5,4 +5,5 @@ adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 ### Fixed
+- Add Python 3 compatibility. -@demsullivan
 - Convert exception to error message using `str()` (#13) -@krzysztofwos
