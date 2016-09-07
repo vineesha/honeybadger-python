@@ -19,7 +19,6 @@ def test_connection_success():
 
     with mock_urlopen(test_request) as request_mock:
         send_notice(config, payload)
-        assert request_mock.called == True
 
 
 # TODO: figure out how to test logging output
