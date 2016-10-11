@@ -21,6 +21,9 @@ setup(
         'psutil',
         'six'
     ],
+    setup_requires=[
+        'psutil',
+    ],
     test_suite='nose.collector',
     tests_require=['nose', 'mock']
 )
